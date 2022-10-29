@@ -24,36 +24,164 @@
 - lalu buka App.js
 - kita ngoding di dalam App.js, di dalam function App
 - function App () hanya bisa menampung satu element
- ```html
+ ```js
+ //index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+
+
+ //App.js
+ import './App.css';
+ 
  function App(){
   return(
-    <h1>Syifa></h1>
+    <h1>Syifa</h1>   //output : Syifa
   )
 }
+
+export default App;
  ```
 
-penulisan function di react harus pakai huruf besar diawal. 
-harus ada return
-hanya boleh ada 1 parent utama
-<div></div> atau pake tag kosong
+- penulisan function di react harus pakai huruf besar diawal. 
+```js
+function App()
+```
+- harus ada return
+```js
+function App(){
+  return()
+}
+```
+- hanya boleh ada 1 parent utama <div></div> atau pake tag kosong
+```js
+//App.js
+function App(){
+  return(
+  <>
+    <h1>Syifa</h1>
+  </>
+  )
+}
+```
+- Jika ingin pakai pake boostrap, bisa download cdn atau download di npm, lalu pasang di html
+- di react 'class' tidak ada, adanya className
+```js
+//App.jsx
+import "./App.css";
+function App(){
+  return(
+  <>
+    <div>img src="" alt="" className="profile-img"/>
+    </div>
+  </>
+  );
+}
+```
+```css
+//App.css
+.profile-img{
+ width: 150px;
+ height: 150px;
+ overflow: hidden;
+ border-radius: 100%
+ object-fit: cover;
+}
+```
+## State dan Props
+- component adalah bagian2 dari sebuah website
+- state : data yg tinggal di dalam komponen tersebut
+- props data yang dikasih/pemberian dat. Digunakan untuk komunikasi dari components parent dan child ngirim sebuah parameter di function
+- state adalah sebuah object untuk menyimpan data di react
+- prosesnya : data ditampung di state, kemudian dikirim melalu props
+- props dipasang di function
+```js
+//buat file baru didalam components, dengan nama MemberInfo.jsx
+//MemberInfo.jsx
+const MemberInfo = (props) => {
+ return (
+  <div className="profile-container">
+   <img src="" alt="" className=""/>
+   <div className="profile-info">
+    <h2>{}/h2>
+    <h3>22 tahun</h3>
+    <p>peserta bootcamp frontend</p>
+   </div>
+  </div>
+ )
+}
+```
+```js
+//App.jsx
+import"./App.css";
+import Memberinfo from "./components/MemberInfo";
 
-pake boostrap bisa download cdn atau download di npm. 
-pasang di html
+function App(){
+ return(
+  <>
+   <MemberInfo/>    //output : memangggil data dari MemberInfo
+  </>
+ );
+}
+```
+#### Event-handler
+- useState untuk menyimpan data yg sifatnya berubah2
+```main.jsx
+//main.jsx
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
+// import style
+import 'bootstrap/dist/css/bootstrap.min.css';
 
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+)
+```
+```js
+//App.jsx
+import { useState } from "react";
+import Card from "./components/Card";
+import Counter from "./components/Counter";
+import ListUser from "./components/ListUser";
 
-ydi react 'class' tidak ada, adanya className
+function App() {
+  // utk conditional rendering
+  const [isLogin, setIsLogin] = useState(false);
 
-statw adalah sebuah object untuk menyimpan data di react
+  return (
+    <div>
+      {/* munculin button klo belum login */}
+      {!isLogin && <button onClick={() => setIsLogin(true)}>Login</button>}
 
-props digunajan untuk komunikasi dari components parent dan child
-ngirim sebuah parameter di function
-data ditampung si state, dikirim melalu props
+      <br />
 
-props dipasang di function
-const Memberinfo = (props)
-clg(prosp)
+      {/* jika sudah login, munculkan counter  */}
+      {isLogin ? <Counter /> : <span>login dulu cuuuy...</span>}
 
-custom data.
-masukin ke app -> {} data baru
+      {/* jika sudah login, munculkan ListUser  */}
+      {isLogin && <ListUser />}
 
-useState untuk menyimpan data yg sifatnya berubah2
+    </div>
+  );
+}
+
+export default App;
+```
+
