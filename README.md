@@ -1,4 +1,4 @@
-# Writing-Week-5
+# Writing Test Week 1 Front-End Bootcamp
 ## React.js
 - React : sebuah library untuk membuat tampilan website
 - React JS dibuat oleh Tim Engineer Facebook
@@ -184,4 +184,187 @@ function App() {
 
 export default App;
 ```
+### Life Cycle
+- ada 3 Siklus : Mount, update, unmount
+- Membuat component ada 2 cara :
+ 1. Function component
+ 2. class component
+  - yang ada pada class component
+   1. componentDidMount
+   2. componentDidUpdate
+   3. componentWillUnmount 
+- use effect : memberikan efek samping/untuk memperlihatkan apa yang terjadi ketika datanya berubah
+```js
+//main.jsx
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  // <React.StrictMode>
+    <App />
+  // </React.StrictMode>
+)
+```
+```jsx
+//ListDigimon.jsx
+import{useEffect} from "react";
+function ListDigimon(){
+ console.log("List Digimon dipanggil");  //output pada console : List Digimon dipanggil
+ useEffect(() => {
+  console.log("ListDigimon mount")  //output pada console : ListDigimon mount
+ })
+
+ return(
+  <>
+   <h1>Hallo</h1>  //output : Hallo
+  </>
+ )
+}
+
+export default ListDigimon
+```
+- pada kodingan diatas, proses pertama yang ditampilkan adalah List Digimon dipanggil, kemudian Hallo, dan yang terakhir ListDigimon mount
+- pada tiap life cycle, kita dapat menambahkan efek yang diperlukan, contohnya :
+  - ketika komponen mucul, ambil data pakai fetch
+  - ketika data state berubah, lakukan filter
+  - ketika komponen hilang, data state jangan diupdate
+```jsx
+//ListDigimon.jsx
+import{useEffect, useState} from "react";
+function ListDigimon(){
+ const [isLoading, setIsLoading] = useState(false)
+ console.log("List Digimon dipanggil");  //output pada console : List Digimon dipanggil
+ useEffect(() => {
+  console.log("ListDigimon mount")  //output pada console : ListDigimon mount
+ })
+
+ return(
+  <>
+   <h1>Hallo</h1>
+   <button onClick={() => setIsLoading(!isLoading)} ubah loading</>
+   <span>{isLoading + ""}</span>
+  </>
+ )
+}
+
+export default ListDigimon
+```
+- output 
+ ![Screenshot (3324)](https://user-images.githubusercontent.com/114098894/198884859-ce4c3d13-50c3-4e5a-b5f2-7e1c15dd3815.png)
+- ketika button ubah loading di klik, maka tulisan false akan berubah menjadi true dan seterusnya
+```jsx
+//ListDigimon.jsx
+import axios from "axios";  
+import{useEffect, useState} from "react";
+function ListDigimon(){
+ const [isLoading, setIsLoading] = useState(false)
+ const [digimons, setdigimons] = useState([])
+ console.log("List Digimon dipanggil");  //output pada console : List Digimon dipanggil
+ useEffect(() => {
+  console.log("ListDigimon mount")  //output pada console : ListDigimon mount
+  axios("https://digimon-api.vercel.app/api/digimon") //axios digunakan sebagai pengganti fetch
+  .then(res=> {
+  setDigimosn(res.data))
+}, []); //tanpa [] dijalankan berkali2 (mount dan update), pakai [] dijalankan 1x aja (mount)
+
+console.log(digimons);
+ return(
+  <>
+   <h1>Hallo</h1>
+   <button onClick={() => setIsLoading(!isLoading)} ubah loading</>
+   <span>{isLoading + ""}</span>
+   {digimons.map()}  //output pada console : menampilkan secara rinci data2 pada digimons
+  </>
+ )
+}
+
+export default ListDigimon
+```
+
+```jsx
+import React from "react";
+import Form from "./components/Form";
+
+const App = () => {
+  return (
+    <>
+      <h1>Halo pagiii</h1> 
+      <Form />
+    </>
+  );
+};
+
+export default App;
+```
+```jsx
+//Form.jsx
+import { useState } from "react";
+import axios from "axios";
+
+const Form = () => {
+  const [name, setName] = useState(""); //kalo mau nampilin gapake set, pakenya yang kiri. buat ngeganti data, pake setData
+  const [address, setAddress] = useState("");
+  const [program, setProgram] = useState("");
+  const [data, setData] = useState({});
+
+  //   console.log(name, address);
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); //fungsinya biar halaman ga ngerefresh pas input submit
+    // setData({ name, address, program });
+    // setName("");
+    // setAddress("");
+    // setProgram("");
+
+    // proses post data menggunakan axios
+    axios
+      .post("http://localhost:3000/student", {
+        name,
+        address,
+        program,
+      })
+      .then(() => {
+        setData({ name, address, program });
+        setName("");
+        setAddress("");
+        setProgram("");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  return (
+    <>
+      <form action="" onSubmit={handleSubmit}> //ketika submit biar datanya keambil pake onSubmit
+        <label htmlFor="name">Name</label>
+        <input type="text" value={name} onChange={(e) => setName(e.target.value)} /> //onChange fungsinya untuk nangkap semua data yang ada didalam submit
+        <label htmlFor="address">Address</label>
+        <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} /> //e.target.value fungsinya untuk nangkap semua data yang ada didalam submit
+        <label htmlFor="option">Program</label>
+        <select value={program} onChange={(e) => setProgram(e.target.value)}> 
+          <option value="">select program</option>
+          <option value="KM">KM</option>
+          <option value="SIC">SIC</option>
+          <option value="Amman">Amman</option>
+        </select>
+        <button type="submit">Submit</button>
+      </form>
+
+      <br />
+      <h2>Name: {data.name}</h2>
+      <h2>Address: {data.address}</h2>
+      <h2>Program: {data.program}</h2>
+    </>
+  );
+};
+
+export default Form;
+```
+- output
+- ![Screenshot (3364)](https://user-images.githubusercontent.com/114098894/198935242-bb41b91a-7617-4108-b8b8-094952ee4486.png)
+
+
+
 
